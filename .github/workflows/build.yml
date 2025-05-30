@@ -1,0 +1,28 @@
+name: Demo
+on:
+  - push
+  - workflow_dispatch
+jobs:
+  version_matrix:
+    strategy:
+      matrix:
+        os:
+          - "ubuntu-22.04"
+          - "ubuntu-24.04"
+        jdk:
+          - 11
+          - 17
+          - 21
+          # - 23 # not available in apt?
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: dependencies
+        run: |
+          apt update
+          apt install -y git openjdk-${{ matrix.jdk }}-jdk
+
+      - name: spotbugs get & build
+        run: |
+          git clone https://github.com/spotbugs/spotbugs.git
+          cd spotbugs
+          ./gradlew build
