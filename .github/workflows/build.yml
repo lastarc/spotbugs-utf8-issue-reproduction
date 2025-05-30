@@ -5,15 +5,17 @@ on:
 jobs:
   version_matrix:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - "ubuntu-22.04"
           - "ubuntu-24.04"
         jdk:
-          - 11
-          - 17
-          - 21
-          # - 23 # not available in apt?
+          - "11.0.27-tem"
+          - "17.0.15-tem"
+          - "21.0.7-tem"
+          - "23.0.2-tem"
+          - "24.0.1-tem"
         langVal:
           - ""
           - "C.UTF-8"
@@ -23,12 +25,22 @@ jobs:
       - name: dependencies
         run: |
           sudo apt update
-          sudo apt install -y git openjdk-${{ matrix.jdk }}-jdk
+          sudo apt install -y git curl
+
+          curl -s "https://get.sdkman.io?ci=true" | bash
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+          sdk version
+          sdk install java ${{ matrix.jdk }}
+          sdk default java ${{ matrix.jdk }}
 
       - name: spotbugs get & build
         run: |
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          export LANG="${{ matrix.langVal }}"
+
           git clone https://github.com/spotbugs/spotbugs.git
           cd spotbugs
-          export LANG="${{ matrix.langVal }}"
+
           echo "LANG=\"$LANG\""
           ./gradlew build
