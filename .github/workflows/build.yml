@@ -25,4 +25,5 @@ jobs:
         run: |
           git clone https://github.com/spotbugs/spotbugs.git
           cd spotbugs
+          echo "LC_ALL=\"$LC_ALL\", LANG=\"$LANG\", LANGUAGE=\"$LANGUAGE\""
           ./gradlew build
