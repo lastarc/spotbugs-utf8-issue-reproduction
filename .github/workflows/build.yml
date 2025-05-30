@@ -18,8 +18,8 @@ jobs:
     steps:
       - name: dependencies
         run: |
-          apt update
-          apt install -y git openjdk-${{ matrix.jdk }}-jdk
+          sudo apt update
+          sudo apt install -y git openjdk-${{ matrix.jdk }}-jdk
 
       - name: spotbugs get & build
         run: |
