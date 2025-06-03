@@ -19,12 +19,24 @@ jobs:
         os:
           - "ubuntu-22.04"
           - "ubuntu-24.04"
+          - "macos-15-large" # x64?
+          - "macos-15" # arm64
     runs-on: ${{ matrix.os }}
     steps:
       - name: dependencies
         run: |
-          sudo apt update
-          sudo apt install -y git curl
+          is_not_darwin() {
+           	case "$(uname -s)" in
+           	*darwin* ) false ;;
+           	*Darwin* ) false ;;
+           	* ) true;;
+           	esac
+          }
+
+          if is_not_darwin; then
+            sudo apt update
+            sudo apt install -y git curl
+          fi
 
           curl -s "https://get.sdkman.io?ci=true" | bash
           source "$HOME/.sdkman/bin/sdkman-init.sh"
